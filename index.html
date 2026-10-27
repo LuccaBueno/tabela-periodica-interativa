@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Tabela periódica interativa com os 118 elementos químicos: propriedades, pesquisa, filtros e comparação.">
+  <title>Tabela Periódica Interativa</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#table-scroll">Pular para a tabela</a>
+
+  <header class="app-header">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">
+        <span class="brand-z">26</span><span class="brand-sym">Fe</span>
+      </div>
+      <div>
+        <h1>Tabela Periódica</h1>
+        <p class="brand-sub">118 elementos · dados IUPAC, NIST e CRC</p>
+      </div>
+    </div>
+
+    <div class="search" role="search">
+      <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></svg>
+      <label for="search-input" class="visually-hidden">Pesquisar elemento por nome, símbolo ou número atômico</label>
+      <input id="search-input" type="search" autocomplete="off" spellcheck="false"
+             placeholder="Pesquisar: nome, símbolo ou número…" aria-describedby="search-status">
+      <kbd class="search-kbd" aria-hidden="true">/</kbd>
+    </div>
+
+    <nav class="header-actions" aria-label="Ações gerais">
+      <button type="button" class="btn btn-ghost" id="btn-about">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/></svg>
+        <span>Sobre</span>
+      </button>
+      <button type="button" class="btn btn-ghost" id="btn-legend" aria-pressed="true" aria-controls="legend">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg>
+        <span>Legenda</span>
+      </button>
+      <button type="button" class="btn btn-ghost" id="btn-theme" aria-label="Alternar para tema claro">
+        <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5Z"/></svg>
+        <span class="theme-label">Tema claro</span>
+      </button>
+    </nav>
+  </header>
+
+  <section class="toolbar" aria-label="Filtros e seleção">
+    <div class="filter-group">
+      <label for="filter-state">Estado físico <span class="hint">(25 °C, 1 atm)</span></label>
+      <select id="filter-state">
+        <option value="">Todos</option>
+        <option value="solid">Sólido</option>
+        <option value="liquid">Líquido</option>
+        <option value="gas">Gasoso</option>
+        <option value="unknown">Desconhecido</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label for="filter-origin">Origem</label>
+      <select id="filter-origin">
+        <option value="">Todas</option>
+        <option value="natural">Natural (primordial + traços)</option>
+        <option value="primordial">Natural primordial</option>
+        <option value="trace">Natural apenas em traços</option>
+        <option value="synthetic">Sintético</option>
+      </select>
+    </div>
+
+    <div class="toolbar-actions">
+      <button type="button" class="btn btn-toggle" id="btn-compare-mode" aria-pressed="false"
+              title="Com o modo ativo, clicar num elemento o adiciona à comparação (atalho: Shift + clique)">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="7" height="14" rx="1.5"/><rect x="14" y="5" width="7" height="14" rx="1.5"/></svg>
+        Modo comparação
+      </button>
+      <button type="button" class="btn" id="btn-clear-filters">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16l-6 7.5V19l-4-2v-4.5Z"/><path d="m16 16 5 5M21 16l-5 5"/></svg>
+        Limpar pesquisa e filtros
+      </button>
+      <button type="button" class="btn" id="btn-clear-selection">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+        Limpar seleção
+      </button>
+    </div>
+
+    <p id="search-status" class="status" role="status" aria-live="polite"></p>
+  </section>
+
+  <section id="legend" class="legend" aria-label="Legenda das famílias químicas">
+    <p class="legend-title">Famílias <span class="hint">— clique para filtrar (pode combinar várias)</span></p>
+    <ul class="legend-list" id="legend-list"></ul>
+  </section>
+
+  <main class="stage">
+    <div class="table-scroll" id="table-scroll" tabindex="-1">
+      <div class="ptable" id="ptable" role="group" aria-label="Tabela periódica dos elementos. Use as setas para navegar e Enter para abrir detalhes.">
+        <!-- células geradas por script.js -->
+        <div class="preview" id="preview" aria-hidden="true"></div>
+      </div>
+    </div>
+    <noscript><p class="noscript">Esta aplicação precisa de JavaScript ativado para exibir a tabela.</p></noscript>
+  </main>
+
+  <!-- Painel lateral de detalhes -->
+  <aside class="detail-panel" id="detail-panel" aria-labelledby="detail-title" hidden>
+    <div class="detail-inner" id="detail-content"></div>
+  </aside>
+
+  <!-- Bandeja de comparação -->
+  <section class="compare-tray" id="compare-tray" aria-label="Elementos selecionados para comparação" hidden>
+    <span class="compare-tray-label">Comparar <span id="compare-count">0</span>/3</span>
+    <ul class="compare-chips" id="compare-chips"></ul>
+    <button type="button" class="btn btn-primary" id="btn-open-compare">Comparar lado a lado</button>
+    <button type="button" class="btn btn-ghost" id="btn-clear-compare">Esvaziar</button>
+  </section>
+
+  <!-- Diálogo de comparação -->
+  <dialog class="dialog dialog-wide" id="compare-dialog" aria-labelledby="compare-title">
+    <div class="dialog-head">
+      <h2 id="compare-title">Comparação de elementos</h2>
+      <button type="button" class="icon-btn" data-close aria-label="Fechar comparação">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+    </div>
+    <div class="dialog-body" id="compare-body"></div>
+  </dialog>
+
+  <!-- Diálogo "Sobre" -->
+  <dialog class="dialog" id="about-dialog" aria-labelledby="about-title">
+    <div class="dialog-head">
+      <h2 id="about-title">Sobre a tabela periódica</h2>
+      <button type="button" class="icon-btn" data-close aria-label="Fechar informações">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+    </div>
+    <div class="dialog-body prose">
+      <p>A tabela periódica organiza os elementos químicos em ordem crescente de <strong>número atômico</strong> (quantidade de prótons no núcleo). Elementos de uma mesma coluna — o <strong>grupo</strong> — têm configurações eletrônicas de valência semelhantes e, por isso, comportamento químico parecido. Cada linha — o <strong>período</strong> — corresponde a uma nova camada eletrônica sendo preenchida.</p>
+      <p>Dmitri Mendeleev publicou sua tabela em 1869 e deixou lacunas para elementos ainda desconhecidos, prevendo propriedades do gálio, do escândio e do germânio antes de serem descobertos. Hoje a tabela tem 118 elementos confirmados pela IUPAC; o último nome oficial foi atribuído em 2016.</p>
+
+      <h3>Como ler uma célula</h3>
+      <div class="about-cell-demo" aria-hidden="true">
+        <div class="cell demo" style="--cat: var(--c-transition)">
+          <span class="cell-z">26</span><span class="cell-sym">Fe</span><span class="cell-name">Ferro</span><span class="cell-mass">55,845</span>
+        </div>
+        <ul>
+          <li><strong>26</strong> — número atômico</li>
+          <li><strong>Fe</strong> — símbolo químico</li>
+          <li><strong>Ferro</strong> — nome</li>
+          <li><strong>55,845</strong> — massa atômica padrão (u)</li>
+        </ul>
+      </div>
+      <p>Valores entre colchetes, como <strong>[98]</strong>, indicam elementos sem isótopos estáveis: mostra-se o número de massa do isótopo de vida mais longa conhecido.</p>
+
+      <h3>Disposição usada</h3>
+      <p>Lantanídeos (La–Lu) e actinídeos (Ac–Lr) aparecem em duas linhas separadas abaixo da tabela, como é convencional. As células marcadas “57–71” e “89–103” no grupo 3 indicam onde essas séries se encaixam. A posição exata de La/Ac e Lu/Lr no grupo 3 ainda é discutida na literatura; aqui eles aparecem na série f e o grupo é exibido como “série f”.</p>
+
+      <h3>Confiabilidade dos dados</h3>
+      <ul>
+        <li><span class="badge badge-est">estimado</span> marca valores extrapolados ou calculados, não medidos.</li>
+        <li><span class="badge badge-pred">previsto</span> marca configurações eletrônicas teóricas (elementos 103–118).</li>
+        <li><em>Indisponível</em> significa que não há valor medido confiável. Nenhum dado foi inventado para preencher lacunas.</li>
+        <li>Elementos a partir do férmio (100) nunca foram obtidos em quantidade visível, por isso o estado físico é “desconhecido”.</li>
+      </ul>
+      <p>Fontes: massas atômicas IUPAC/CIAAW; propriedades físicas compiladas do CRC Handbook of Chemistry and Physics e do NIST via base de dados aberta “mendeleev”. Detalhes no arquivo README.md.</p>
+
+      <h3>Atalhos de teclado</h3>
+      <ul class="kbd-list">
+        <li><kbd>/</kbd> foca a pesquisa</li>
+        <li><kbd>←</kbd> <kbd>↑</kbd> <kbd>→</kbd> <kbd>↓</kbd> navegam pela tabela</li>
+        <li><kbd>Enter</kbd> abre os detalhes · <kbd>Shift</kbd> + <kbd>Enter</kbd> adiciona à comparação</li>
+        <li><kbd>Esc</kbd> fecha painéis e janelas</li>
+      </ul>
+    </div>
+  </dialog>
+
+  <script src="elements.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
